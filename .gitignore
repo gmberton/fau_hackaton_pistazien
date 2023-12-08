@@ -1,3 +1,5 @@
 logs
 .spyproject
 __pycache__
+.venv
+weights
