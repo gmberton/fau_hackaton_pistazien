@@ -64,16 +64,6 @@ def build_prediction_image(images_paths, preds_correct=None):
     return final_image
 
 
-def save_file_with_paths(query_path, preds_paths, output_path):
-    file_content = []
-    file_content.append("Query path:")
-    file_content.append(query_path + "\n")
-    file_content.append("Predictions paths:")
-    file_content.append("\n".join(preds_paths) + "\n")
-    with open(output_path, "w") as file:
-        _ = file.write("\n".join(file_content))
-
-
 def save_preds(predictions, eval_ds, output_folder, save_only_wrong_preds=None):
     """For each query, save an image containing the query and its predictions,
     and a file with the paths of the query, its predictions and its positives.
@@ -89,6 +79,12 @@ def save_preds(predictions, eval_ds, output_folder, save_only_wrong_preds=None):
     """
     # positives_per_query = eval_ds.get_positives()
     os.makedirs(f"{output_folder}/preds", exist_ok=True)
+    output_file_content = "Query,"
+    for i in range(len(predictions[0])):
+        output_file_content += f"Prediction {i},"
+    output_file_content = output_file_content[:-1]  # remove final ","
+    output_file_content += "\n"
+    
     for query_index, preds in enumerate(tqdm(predictions, ncols=80, desc=f"Saving preds in {output_folder}")):
         query_path = eval_ds.queries_paths[query_index]
         list_of_images_paths = [query_path]
@@ -108,9 +104,9 @@ def save_preds(predictions, eval_ds, output_folder, save_only_wrong_preds=None):
         pred_image_path = f"{output_folder}/preds/{query_index:03d}.jpg"
         prediction_image.save(pred_image_path)
         
-        save_file_with_paths(
-            query_path=list_of_images_paths[0],
-            preds_paths=list_of_images_paths[1:],
-            output_path=f"{output_folder}/preds/{query_index:03d}.txt"
-        )
+        output_file_content += ",".join(list_of_images_paths)
+        output_file_content += "\n"
+    
+    with open(f"{output_folder}/output.csv", "w") as file:
+        _ = file.write(output_file_content)
 

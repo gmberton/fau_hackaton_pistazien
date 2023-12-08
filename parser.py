@@ -8,8 +8,8 @@ def parse_arguments():
     parser.add_argument("--method", type=str, default="resnet18",
                         choices=["resnet18", "mixvpr"],
                         help="_")
-    parser.add_argument("--database_folder", type=str, default="images_database", help="_")
-    parser.add_argument("--queries_folder", type=str, default="images_queries", help="_")
+    parser.add_argument("--database_folder", type=str, default="images_train", help="_")
+    parser.add_argument("--queries_folder", type=str, default="images_test", help="_")
     parser.add_argument("--num_workers", type=int, default=4,
                         help="_")
     parser.add_argument("--batch_size", type=int, default=4,
