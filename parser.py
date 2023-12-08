@@ -20,7 +20,7 @@ def parse_arguments():
                         help="_")
     parser.add_argument("--recall_values", type=int, nargs="+", default=[1, 5, 10, 20],
                         help="values for recall (e.g. recall@1, recall@5)")
-    parser.add_argument("--num_preds_to_save", type=int, default=0,
+    parser.add_argument("--num_preds_to_save", type=int, default=3,
                         help="set != 0 if you want to save predictions for each query")
     parser.add_argument("--save_only_wrong_preds", action="store_true",
                         help="set to true if you want to save predictions only for "
