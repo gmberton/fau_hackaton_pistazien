@@ -64,14 +64,12 @@ def build_prediction_image(images_paths, preds_correct=None):
     return final_image
 
 
-def save_file_with_paths(query_path, preds_paths, positives_paths, output_path):
+def save_file_with_paths(query_path, preds_paths, output_path):
     file_content = []
     file_content.append("Query path:")
     file_content.append(query_path + "\n")
     file_content.append("Predictions paths:")
     file_content.append("\n".join(preds_paths) + "\n")
-    file_content.append("Positives paths:")
-    file_content.append("\n".join(positives_paths) + "\n")
     with open(output_path, "w") as file:
         _ = file.write("\n".join(file_content))
 
@@ -110,11 +108,9 @@ def save_preds(predictions, eval_ds, output_folder, save_only_wrong_preds=None):
         pred_image_path = f"{output_folder}/preds/{query_index:03d}.jpg"
         prediction_image.save(pred_image_path)
         
-        # positives_paths = [eval_ds.database_paths[idx] for idx in positives_per_query[query_index]]
-        # save_file_with_paths(
-        #     query_path=list_of_images_paths[0],
-        #     preds_paths=list_of_images_paths[1:],
-        #     positives_paths=positives_paths,
-        #     output_path=f"{output_folder}/preds/{query_index:03d}.txt"
-        # )
+        save_file_with_paths(
+            query_path=list_of_images_paths[0],
+            preds_paths=list_of_images_paths[1:],
+            output_path=f"{output_folder}/preds/{query_index:03d}.txt"
+        )
 
