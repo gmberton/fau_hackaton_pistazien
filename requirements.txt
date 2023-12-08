@@ -1,0 +1,9 @@
+faiss_cpu
+gdown
+numpy
+opencv_python
+Pillow
+skimage
+torch
+torchvision
+tqdm
