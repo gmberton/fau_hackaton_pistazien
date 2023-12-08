@@ -5,6 +5,7 @@ import torch
 import logging
 import numpy as np
 from tqdm import tqdm
+import lovely_tensors as lt
 from datetime import datetime
 from torch.utils.data import DataLoader
 from torch.utils.data.dataset import Subset
@@ -15,6 +16,7 @@ import visualizations
 import trained_models
 from test_dataset import TestDataset
 
+lt.monkey_patch()
 args = parser.parse_arguments()
 start_time = datetime.now()
 output_folder = f"logs/{args.exp_name}/{start_time.strftime('%Y-%m-%d_%H-%M-%S')}"
@@ -37,6 +39,7 @@ with torch.inference_mode():
     all_descriptors = np.empty((len(test_ds), descriptors_dimension), dtype="float32")
     for images, indices in tqdm(database_dataloader, ncols=100):
         descriptors = model(images.to(args.device))
+        logging.debug(f"descriptors: {descriptors}")
         descriptors = descriptors.cpu().numpy()
         all_descriptors[indices.numpy(), :] = descriptors
         
