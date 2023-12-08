@@ -3,7 +3,7 @@ gdown
 numpy
 opencv_python
 Pillow
-skimage
+scikit-image
 torch
 torchvision
 tqdm
