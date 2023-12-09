@@ -14,7 +14,7 @@ import parser
 import commons
 import visualizations
 import trained_models
-from test_dataset import TestDataset
+from test_dataset import TestDataset, CXRTestDataset
 
 lt.monkey_patch()
 args = parser.parse_arguments()
@@ -28,7 +28,11 @@ logging.info(f"The outputs are being saved in {output_folder}")
 model, descriptors_dimension = trained_models.get_model(args.method)
 model = model.eval().to(args.device)
 
-test_ds = TestDataset(args.database_folder, args.queries_folder)
+# test_ds = TestDataset(args.database_folder, args.queries_folder)
+if args.dataset == "cxr":
+    test_ds = CXRTestDataset(args.dataset_folder, args.database_file, args.queries_file)
+else:
+    test_ds = TestDataset(args.database_folder, args.queries_folder)
 logging.info(f"Testing on {test_ds}")
 
 with torch.inference_mode():
@@ -76,4 +80,6 @@ if args.num_preds_to_save != 0:
         args.num_preds_to_save_in_images,
         args.num_preds_to_save_in_excel,
     )
+
+
 

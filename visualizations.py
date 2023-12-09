@@ -5,6 +5,9 @@ import numpy as np
 from tqdm import tqdm
 from skimage.transform import rescale
 from PIL import Image, ImageDraw, ImageFont
+import pandas as pd
+import logging
+from sklearn.neighbors import KNeighborsClassifier
 
 
 # Height and width of a single image
@@ -44,7 +47,7 @@ def build_prediction_image(images_paths, preds_correct=None):
     # labels = ["Query"] + [f"Pred {i} - {is_correct}" for i, is_correct in enumerate(preds_correct[1:])]
     labels = ["Query"] + [f"Pred {i}" for i, is_correct in enumerate(preds_correct[1:])]
     num_images = len(images_paths)
-    images = [np.array(Image.open(path)) for path in images_paths]
+    images = [np.array(Image.open(path).convert("RGB")) for path in images_paths]
     for img, correct in zip(images, preds_correct):
         if correct is None:
             continue
@@ -105,4 +108,51 @@ def save_preds(predictions, eval_ds, output_folder,
     
     with open(f"{output_folder}/output.csv", "w") as file:
         _ = file.write(output_file_content)
+    
+    if dataset == "cxr":
+        path_df = pd.read_csv(f'{output_folder}/output.csv')
+        labels_df = pd.read_csv("/mnt/nas/Data_WholeBody/NIH_ChestX-ray8/Data_Entry_2017_v2020.csv")
+        # Create a dictionary mapping from image file names to labels
+        labels_dict = dict(zip(labels_df['Image Index'], labels_df['Finding Labels']))
 
+        # Function to extract filename from path and get corresponding label
+        def get_label_from_path(path):
+            filename = path.split('/')[-1]
+            return labels_dict.get(filename, 'Label Not Found')
+
+        # Apply the function to each prediction column
+        for col in path_df.columns[:]:
+            path_df[col] = path_df[col].apply(get_label_from_path)
+
+        # Save the updated dataframe
+        path_df.to_csv(f'{output_folder}/preds_with_labels.csv', index=False)
+
+        jac_sim = calculate_jaccard_similarity(path_df)
+        print(f'Jaccard Similarity: {jac_sim:.4f}')
+        logging.info(f'Jaccard Similarity: {jac_sim:.4f}')
+
+
+def jaccard_similarity(set1, set2):
+    """Calculate the Jaccard Similarity between two sets."""
+    intersection = len(set1.intersection(set2))
+    union = len(set1.union(set2))
+    return intersection / union if union != 0 else 0
+
+def calculate_jaccard_similarity(df):
+    jaccard_scores = []
+
+    for index, row in df.iterrows():
+        query_labels = set(row['Query'].split('|'))
+        prediction_scores = []
+        
+        for col in df.columns[1:]:  # Skip the first column which is 'Query'
+            prediction_labels = set(row[col].split('|'))
+            score = jaccard_similarity(query_labels, prediction_labels)
+            prediction_scores.append(score)
+        
+        # Average Jaccard Similarity for this row
+        jaccard_scores.append(sum(prediction_scores) / len(prediction_scores))
+
+    # Calculate overall Jaccard Similarity
+    overall_jaccard_similarity = sum(jaccard_scores) / len(jaccard_scores)
+    return overall_jaccard_similarity

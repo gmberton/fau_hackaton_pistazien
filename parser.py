@@ -10,7 +10,7 @@ def parse_arguments():
         "--method",
         type=str,
         default="resnet18",
-        choices=["resnet18", "mixvpr", "fasternet"],
+        choices=["resnet18", "mixvpr", "fasternet", "mage"],
         help="_",
     )
     parser.add_argument("--database_folder", type=str, default="images_train", help="_")
