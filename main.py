@@ -62,12 +62,18 @@ faiss_index.add(database_descriptors)
 del database_descriptors, all_descriptors
 
 logging.debug("Calculating recalls")
-_, predictions = faiss_index.search(queries_descriptors, max(args.recall_values))
+args.num_preds_to_save = max(args.num_preds_to_save_in_images, args.num_preds_to_save_in_excel)
+_, predictions = faiss_index.search(queries_descriptors, args.num_preds_to_save)
 
 # Save visualizations of predictions
 if args.num_preds_to_save != 0:
     logging.info("Saving final predictions")
     # For each query save num_preds_to_save predictions
-    visualizations.save_preds(predictions[:, :args.num_preds_to_save], test_ds,
-                              output_folder, args.save_only_wrong_preds)
+    visualizations.save_preds(
+        predictions,
+        test_ds,
+        output_folder,
+        args.num_preds_to_save_in_images,
+        args.num_preds_to_save_in_excel,
+    )
 

@@ -7,7 +7,6 @@ from .fasternet.parser import parse_fasternet_args
 from .utils import download_file
 
 from pathlib import Path
-import logging
 
 
 def get_model(method, backbone=None, descriptors_dimension=None):

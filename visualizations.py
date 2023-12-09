@@ -38,6 +38,8 @@ def build_prediction_image(images_paths, preds_correct=None):
     """Build a row of images, where the first is the query and the rest are predictions.
     For each image, if is_correct then draw a green/red box.
     """
+    if preds_correct is None:
+        preds_correct = [None for _ in images_paths]
     assert len(images_paths) == len(preds_correct)
     # labels = ["Query"] + [f"Pred {i} - {is_correct}" for i, is_correct in enumerate(preds_correct[1:])]
     labels = ["Query"] + [f"Pred {i}" for i, is_correct in enumerate(preds_correct[1:])]
@@ -64,7 +66,9 @@ def build_prediction_image(images_paths, preds_correct=None):
     return final_image
 
 
-def save_preds(predictions, eval_ds, output_folder, save_only_wrong_preds=None):
+def save_preds(predictions, eval_ds, output_folder,
+               num_preds_to_save_in_images, num_preds_to_save_in_excel,
+    ):
     """For each query, save an image containing the query and its predictions,
     and a file with the paths of the query, its predictions and its positives.
 
@@ -74,8 +78,6 @@ def save_preds(predictions, eval_ds, output_folder, save_only_wrong_preds=None):
         for each query
     eval_ds : TestDataset
     output_folder : str / Path with the path to save the predictions
-    save_only_wrong_preds : bool, if True save only the wrongly predicted queries,
-        i.e. the ones where the first pred is uncorrect (further than 25 m)
     """
     # positives_per_query = eval_ds.get_positives()
     os.makedirs(f"{output_folder}/preds", exist_ok=True)
@@ -89,22 +91,16 @@ def save_preds(predictions, eval_ds, output_folder, save_only_wrong_preds=None):
         query_path = eval_ds.queries_paths[query_index]
         list_of_images_paths = [query_path]
         # List of None (query), True (correct preds) or False (wrong preds)
-        preds_correct = [None]
         for pred_index, pred in enumerate(preds):
             pred_path = eval_ds.database_paths[pred]
             list_of_images_paths.append(pred_path)
-            # is_correct = pred in positives_per_query[query_index]
-            # preds_correct.append(is_correct)
-            preds_correct.append(None)
+            
+            if num_preds_to_save_in_images != 0:
+                prediction_image = build_prediction_image(list_of_images_paths[:num_preds_to_save_in_images + 1])
+                pred_image_path = f"{output_folder}/preds/{query_index:03d}.jpg"
+                prediction_image.save(pred_image_path)
         
-        if save_only_wrong_preds and preds_correct[1]:
-            continue
-        
-        prediction_image = build_prediction_image(list_of_images_paths, preds_correct)
-        pred_image_path = f"{output_folder}/preds/{query_index:03d}.jpg"
-        prediction_image.save(pred_image_path)
-        
-        output_file_content += ",".join(list_of_images_paths)
+        output_file_content += ",".join(list_of_images_paths[:num_preds_to_save_in_excel + 1])
         output_file_content += "\n"
     
     with open(f"{output_folder}/output.csv", "w") as file:

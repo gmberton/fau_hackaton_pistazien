@@ -32,23 +32,16 @@ def parse_arguments():
         "--device", type=str, default="cuda", choices=["cuda", "cpu"], help="_"
     )
     parser.add_argument(
-        "--recall_values",
+        "--num_preds_to_save_in_excel",
         type=int,
-        nargs="+",
-        default=[1, 5, 10, 20],
-        help="values for recall (e.g. recall@1, recall@5)",
-    )
-    parser.add_argument(
-        "--num_preds_to_save",
-        type=int,
-        default=3,
+        default=10,
         help="set != 0 if you want to save predictions for each query",
     )
     parser.add_argument(
-        "--save_only_wrong_preds",
-        action="store_true",
-        help="set to true if you want to save predictions only for "
-        "wrongly predicted queries",
+        "--num_preds_to_save_in_images",
+        type=int,
+        default=3,
+        help="set != 0 if you want to save predictions for each query",
     )
 
     args = parser.parse_args()
