@@ -6,7 +6,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("--method", type=str, default="resnet18",
-                        choices=["resnet18", "mixvpr"],
+                        choices=["resnet18", "mixvpr", "mage"],
                         help="_")
     parser.add_argument("--database_folder", type=str, default="images_train", help="_")
     parser.add_argument("--queries_folder", type=str, default="images_test", help="_")
@@ -25,6 +25,10 @@ def parse_arguments():
     parser.add_argument("--save_only_wrong_preds", action="store_true",
                         help="set to true if you want to save predictions only for "
                         "wrongly predicted queries")
+    parser.add_argument("--dataset", type=str, default="cxr")
+    parser.add_argument("--dataset_folder", type=str, default="data")
+    parser.add_argument("--database_file", type=str, default="data/database.csv")
+    parser.add_argument("--queries_file", type=str, default="data/queries.csv")
     
     args = parser.parse_args()
     
