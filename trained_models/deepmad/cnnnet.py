@@ -15,6 +15,7 @@ from torch.nn import functional as F
 
 from .modules import __all_blocks__, network_weight_stupid_init
 from .modules.qconv import QLinear
+from ..utils import UnNormalize
 
 
 def parse_cmd_args(argv):
@@ -101,6 +102,9 @@ class CnnNet(nn.Module):
         self.classfication = classfication
         self.__all_blocks__ = __all_blocks__
         self.logger = logger or logging
+        self.un_normalize = UnNormalize(
+            mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)
+        )
 
         if self.structure_txt is not None:
             assert self.structure_str is None
@@ -174,7 +178,7 @@ class CnnNet(nn.Module):
 
     def forward(self, x):
         # add different stages outputs for detection
-        output = x
+        output = self.un_normalize(x) * 255
         if not self.classfication:
             stage_idx_output = [self.stage_idx[idx] for idx in self.out_indices]
         stage_features_list = []
