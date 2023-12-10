@@ -65,7 +65,7 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
     
 
 class image_encoder(torch.nn.Module):
-    def __init__(self, n_classes = 1000):
+    def __init__(self):
         super().__init__()
         
         # Download Model
@@ -75,8 +75,8 @@ class image_encoder(torch.nn.Module):
         if not os.path.exists(model_path):
             os.mkdir(model_path)
             gdown.download(id = "1bICQeHUXWvu5HQ3cVtqfbtFS4Cke36Aq", 
-                        output = model_name, 
-                        quiet = False)
+                           output = model_name, 
+                           quiet = False)
 
         # Setup Model
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
