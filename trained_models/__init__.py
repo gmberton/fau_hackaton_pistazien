@@ -1,6 +1,7 @@
 
 import os
 import gdown
+import sys
 import torch
 import torchvision
 
@@ -10,6 +11,7 @@ from .fasternet.parser import parse_fasternet_args
 from .utils import download_file
 from trained_models import models_vit_mage
 from util_mage.pos_embed import interpolate_pos_embed
+from trained_models import mixvpr, clip_backbone, iptn_backbone
 
 from pathlib import Path
 
@@ -21,6 +23,10 @@ def get_model(method, backbone=None, descriptors_dimension=None):
             weights=torchvision.models.ResNet18_Weights.DEFAULT
         )
         model.fc = torch.nn.Identity()
+        descriptors_dimension = 512
+    
+    elif method == "clip":
+        model = clip_backbone.image_encoder()
         descriptors_dimension = 512
 
     elif method == "mixvpr":
