@@ -61,13 +61,15 @@ def get_model(method, backbone=None, descriptors_dimension=None):
     
     elif method == "mage":
         # To download the models run this
-        # url = "https://drive.google.com/file/d/1Q6tbt3vF0bSrv5sPrjpFu8ksG3vTsVX2/view"
-        # gdown.download(url=url, output="mage-vitb-1600.pth", fuzzy=True)
-        # url = "https://drive.google.com/file/d/13S_unB87n6KKuuMdyMnyExW0G1kplTbP/view"
-        # gdown.download(url=url, output="vqgan_jax_strongaug.ckpt", fuzzy=True)
+        url = "https://drive.google.com/file/d/1Q6tbt3vF0bSrv5sPrjpFu8ksG3vTsVX2/view"
+        if not os.path.exists("mage-vitb-1600.pth"):
+            gdown.download(url=url, output="mage-vitb-1600.pth", fuzzy=True)
+        url = "https://drive.google.com/file/d/13S_unB87n6KKuuMdyMnyExW0G1kplTbP/view"
+        if not os.path.exists("vqgan_jax_strongaug.ckpt"):
+            gdown.download(url=url, output="vqgan_jax_strongaug.ckpt", fuzzy=True)
         
         model = models_vit_mage.vit_base_patch16()
-        checkpoint_model = torch.load("/home/yitong/fau/mage/mage-vitb-1600.pth")["model"]
+        checkpoint_model = torch.load("mage-vitb-1600.pth")["model"]
         state_dict = model.state_dict()
         for k in ['head.weight', 'head.bias']:
             if k in checkpoint_model and checkpoint_model[k].shape != state_dict[k].shape:

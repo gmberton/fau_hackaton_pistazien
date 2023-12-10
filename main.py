@@ -59,6 +59,8 @@ with torch.inference_mode():
             descriptors = model(images.to(args.device))
             descriptors = descriptors.cpu().numpy()
             all_descriptors[indices.numpy(), :] = descriptors
+        queries_descriptors = all_descriptors[test_ds.database_num:]
+        database_descriptors = all_descriptors[:test_ds.database_num]
     else:
         if not os.path.exists(f"database_descriptors.pkl"):
             logging.debug("Extracting database descriptors for evaluation/testing")
