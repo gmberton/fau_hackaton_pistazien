@@ -10,7 +10,7 @@ def parse_arguments():
         "--method",
         type=str,
         default="resnet18",
-        choices=["resnet18", "mixvpr", "fasternet", "mage", "clip", "g2sd"],
+        choices=["resnet18", "mixvpr", "fasternet", "mage", "clip", "g2sd", "deepmad-89m"],
         help="_",
     )
     parser.add_argument(
@@ -50,5 +50,5 @@ def parse_arguments():
     )
     
     args = parser.parse_args()
-    
+
     return args
