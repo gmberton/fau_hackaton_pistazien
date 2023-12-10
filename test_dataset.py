@@ -68,8 +68,8 @@ class CXRTestDataset(data.Dataset):
         """
         super().__init__()
         
-        self.database_paths = pd.read_csv(database_file)["Image Index"].tolist()[:600]
-        self.queries_paths = pd.read_csv(queries_file)["Image Index"].tolist()[50:60]
+        self.database_paths = pd.read_csv(database_file)["Image Index"].tolist()
+        self.queries_paths = pd.read_csv(queries_file)["Image Index"].tolist()
 
         self.database_paths = [f'{data_folder}/{p}' for p in self.database_paths]
         self.queries_paths = [f'{data_folder}/{p}' for p in self.queries_paths]
@@ -83,14 +83,30 @@ class CXRTestDataset(data.Dataset):
         self.base_transform = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-            transforms.Resize((256, 256)),
+            transforms.Resize((256, 256), antialias=True),
         ])
+
+        file_with_label = pd.read_csv('/home/yitong/fau/processed_labels.csv')
+        diagnoses = ['No Finding', 'Atelectasis', 'Cardiomegaly', 'Effusion', 'Infiltration', 
+             'Mass', 'Nodule', 'Pneumonia', 'Pneumothorax', 'Consolidation', 
+             'Edema', 'Emphysema', 'Fibrosis', 'Pleural_Thickening', 'Hernia']
+
+        # Function to create one-hot encoded list
+        def one_hot_encode(row):
+            return [row[diagnosis] for diagnosis in diagnoses]
+
+        # Apply the function to each row
+        file_with_label['one_hot'] = file_with_label.apply(one_hot_encode, axis=1)
+        self.file_with_label = file_with_label
     
     def __getitem__(self, index):
         image_path = self.images_paths[index]
         pil_img = Image.open(image_path).convert("RGB")
         normalized_img = self.base_transform(pil_img)
-        return normalized_img, index
+
+        one_hot_label = self.file_with_label[self.file_with_label['Image Index'] == image_path.split('/')[-1]]['one_hot'].iloc[0]
+        one_hot_label = [p for p in one_hot_label]
+        return normalized_img, index, one_hot_label
     
     def __len__(self):
         return len(self.images_paths)
