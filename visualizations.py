@@ -69,7 +69,7 @@ def build_prediction_image(images_paths, preds_correct=None):
     return final_image
 
 
-def save_preds(predictions, eval_ds, output_folder,
+def save_preds(dataset, predictions, eval_ds, output_folder,
                num_preds_to_save_in_images, num_preds_to_save_in_excel,
     ):
     """For each query, save an image containing the query and its predictions,
@@ -137,6 +137,7 @@ def jaccard_similarity(set1, set2):
     intersection = len(set1.intersection(set2))
     union = len(set1.union(set2))
     return intersection / union if union != 0 else 0
+
 
 def calculate_jaccard_similarity(df):
     jaccard_scores = []

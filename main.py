@@ -74,6 +74,7 @@ if args.num_preds_to_save != 0:
     logging.info("Saving final predictions")
     # For each query save num_preds_to_save predictions
     visualizations.save_preds(
+        args.dataset,
         predictions,
         test_ds,
         output_folder,
@@ -81,5 +82,9 @@ if args.num_preds_to_save != 0:
         args.num_preds_to_save_in_excel,
     )
 
-
+if args.dataset == "cifar":
+    from scripts import eval_cifar
+    top = 5
+    accuracy = eval_cifar.compute_accuracy(csv_path=output_folder + "/output.csv", top=top)
+    logging.info(f"Top-{top} accuracy {accuracy * 100:.1f}")
 

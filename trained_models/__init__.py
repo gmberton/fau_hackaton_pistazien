@@ -1,3 +1,6 @@
+
+import os
+import gdown
 import torch
 import torchvision
 
@@ -26,28 +29,34 @@ def get_model(method, backbone=None, descriptors_dimension=None):
 
     elif method == "fasternet":
         cfg_path = base_path / "trained_models" / "fasternet" / "fasternet_l.yaml"
-        checkpoint_path = base_path / "weights" / "fasternet_l.pth"
+        fasternet_checkpoint_path = base_path / "weights" / "fasternet_l.pth"
         checkpoint_url = "https://github.com/JierunChen/FasterNet/releases/download/v1.0/fasternet_l-epoch.299-val_acc1.83.5060.pth"
 
-        download_file(checkpoint_url, checkpoint_path)
+        download_file(checkpoint_url, fasternet_checkpoint_path)
 
         args = parse_fasternet_args(
             [
                 "-c",
                 str(cfg_path.absolute().resolve()),
                 "--checkpoint_path",
-                str(checkpoint_path.absolute().resolve()),
+                str(fasternet_checkpoint_path.absolute().resolve()),
             ]
         )
         model = FasterNet(num_classes=1000, hparams=args)
         missing_keys, unexpected_keys = model.model.load_state_dict(
-            torch.load(checkpoint_path), False
+            torch.load(fasternet_checkpoint_path), False
         )
         model.model.head = torch.nn.Identity()
         descriptors_dimension = 1280
 
     
     elif method == "mage":
+        # To download the models run this
+        # url = "https://drive.google.com/file/d/1Q6tbt3vF0bSrv5sPrjpFu8ksG3vTsVX2/view"
+        # gdown.download(url=url, output="mage-vitb-1600.pth", fuzzy=True)
+        # url = "https://drive.google.com/file/d/13S_unB87n6KKuuMdyMnyExW0G1kplTbP/view"
+        # gdown.download(url=url, output="vqgan_jax_strongaug.ckpt", fuzzy=True)
+        
         model = models_vit_mage.vit_base_patch16()
         checkpoint_model = torch.load("mage-vitb-1600.pth")["model"]
         state_dict = model.state_dict()

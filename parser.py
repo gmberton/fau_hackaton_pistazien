@@ -5,13 +5,18 @@ def parse_arguments():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-
+    
     parser.add_argument(
         "--method",
         type=str,
         default="resnet18",
         choices=["resnet18", "mixvpr", "fasternet", "mage"],
         help="_",
+    )
+    parser.add_argument(
+        "--dataset", type=str, default="others",
+        choices=["others", "cifar", "cxr"],
+        help="_"
     )
     parser.add_argument("--database_folder", type=str, default="images_train", help="_")
     parser.add_argument("--queries_folder", type=str, default="images_test", help="_")
@@ -43,7 +48,7 @@ def parse_arguments():
         default=3,
         help="set != 0 if you want to save predictions for each query",
     )
-
+    
     args = parser.parse_args()
-
+    
     return args
