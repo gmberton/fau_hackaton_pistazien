@@ -2,7 +2,7 @@ import sys
 import torch
 import torchvision
 
-from trained_models import mixvpr, clip_backbone, iptn_backbone
+from trained_models import mixvpr, clip_backbone, g2sd_backbone
 
 
 def get_model(method, backbone=None, descriptors_dimension=None):
@@ -15,10 +15,9 @@ def get_model(method, backbone=None, descriptors_dimension=None):
         model = clip_backbone.image_encoder()
         descriptors_dimension = 512
 
-    elif method == "itpn":
-        model = iptn_backbone.image_encoder()
-        descriptors_dimension = 512
-        sys.exit("kcd here")
+    elif method == "g2sd":
+        model = g2sd_backbone.image_encoder()
+        descriptors_dimension = 384
 
     elif method == "mixvpr":
         model = mixvpr.MixVPR()

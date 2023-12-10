@@ -6,7 +6,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("--method", type=str, default="resnet18",
-                        choices=["resnet18", "mixvpr", "clip", "itpn"],
+                        choices=["resnet18", "mixvpr", "clip", "g2sd"],
                         help="_")
     parser.add_argument("--database_folder", type=str, default="images_train", help="_")
     parser.add_argument("--queries_folder", type=str, default="images_test", help="_")
