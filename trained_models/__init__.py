@@ -67,7 +67,7 @@ def get_model(method, backbone=None, descriptors_dimension=None):
         # gdown.download(url=url, output="vqgan_jax_strongaug.ckpt", fuzzy=True)
         
         model = models_vit_mage.vit_base_patch16()
-        checkpoint_model = torch.load("mage-vitb-1600.pth")["model"]
+        checkpoint_model = torch.load("/home/yitong/fau/mage/mage-vitb-1600.pth")["model"]
         state_dict = model.state_dict()
         for k in ['head.weight', 'head.bias']:
             if k in checkpoint_model and checkpoint_model[k].shape != state_dict[k].shape:
@@ -79,7 +79,7 @@ def get_model(method, backbone=None, descriptors_dimension=None):
         # load pre-trained model
         msg = model.load_state_dict(checkpoint_model, strict=False)
         print(msg)
-        descriptors_dimension = 1000
+        descriptors_dimension = 768
     
     # TODO add models here
 

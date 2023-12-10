@@ -49,7 +49,7 @@ class BertEmbeddings(nn.Module):
 class VisionTransformerMage(timm.models.vision_transformer.VisionTransformer):
     """ Vision Transformer with support for global average pooling
     """
-    def __init__(self, global_pool=False, vqgan_ckpt_path='vqgan_jax_strongaug.ckpt', **kwargs):
+    def __init__(self, global_pool=False, vqgan_ckpt_path='/home/yitong/fau/mage/vqgan_jax_strongaug.ckpt', **kwargs):
         super(VisionTransformerMage, self).__init__(**kwargs)
 
         self.global_pool = global_pool
@@ -79,7 +79,7 @@ class VisionTransformerMage(timm.models.vision_transformer.VisionTransformer):
                                         max_position_embeddings=256 + 1,
                                         dropout=0.1)
 
-    def forward_features(self, x):
+    def forward(self, x):
         # tokenization
         with torch.no_grad():
             z_q, _, token_tuple = self.vqgan.encode(x)
