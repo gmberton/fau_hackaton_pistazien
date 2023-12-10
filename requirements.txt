@@ -12,3 +12,4 @@ timm
 pytorch-lightning
 fvcore
 lightning-bolts
+mega.py

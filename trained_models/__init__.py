@@ -1,7 +1,6 @@
 
 import os
 import gdown
-import sys
 import torch
 import torchvision
 
@@ -11,7 +10,7 @@ from .fasternet.parser import parse_fasternet_args
 from .utils import download_file
 from trained_models import models_vit_mage
 from util_mage.pos_embed import interpolate_pos_embed
-from trained_models import mixvpr, clip_backbone, iptn_backbone
+from trained_models import clip_backbone
 
 from pathlib import Path
 

@@ -87,4 +87,9 @@ if args.dataset == "cifar":
     top = 5
     accuracy = eval_cifar.compute_accuracy(csv_path=output_folder + "/output.csv", top=top)
     logging.info(f"Top-{top} accuracy {accuracy * 100:.1f}")
+elif args.dataset == "stlucia":
+    from scripts import eval_stlucia
+    top = 5
+    accuracy = eval_stlucia.compute_accuracy(csv_path=output_folder + "/output.csv", top=top)
+    logging.info(f"Top-{top} accuracy {accuracy * 100:.1f}")
 
