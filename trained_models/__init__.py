@@ -10,7 +10,7 @@ from .fasternet.parser import parse_fasternet_args
 from .utils import download_file
 from trained_models import models_vit_mage
 from util_mage.pos_embed import interpolate_pos_embed
-from trained_models import clip_backbone
+from trained_models import clip_backbone, g2sd_backbone
 
 from pathlib import Path
 
@@ -27,6 +27,10 @@ def get_model(method, backbone=None, descriptors_dimension=None):
     elif method == "clip":
         model = clip_backbone.image_encoder()
         descriptors_dimension = 512
+
+    elif method == "g2sd":
+        model = g2sd_backbone.image_encoder()
+        descriptors_dimension = 384
 
     elif method == "mixvpr":
         model = mixvpr.MixVPR()
